@@ -1,3 +1,6 @@
 
 *node_modules/
 bio-data/node_modules/
+state/src/components/Header/
+state/src/components/Notes
+state/src/components/NoteTakingApp.jsx
