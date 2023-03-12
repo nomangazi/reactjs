@@ -1,50 +1,34 @@
 const NoteForm = (props) => {
-    const createHandler = (e) => {
+    console.log(props);
+    const updateHandler = (e) => {
         e.preventDefault();
         if (!props.noteTitle) {
-            alert(`Please provide a valid note title.`);
+            alert('Provide a valid note title.');
             return;
         }
-        const newNote = {
-            id: Date.now() + '',
-            title: props.noteTitle,
-        };
-
-        props.setNotes([newNote, ...props.notes]);
-        props.setNoteTitle('');
+        fetch(`http://localhost:4000/notes/${props.editAbleNote.id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                title: props.noteTitle,
+            }),
+        }).then(() => {
+            props.getAllNotes();
+            props.setEditMode(false);
+            props.setNoteTitle('');
+        });
     };
-
-
-    const updateHandler = (e) => {
-        e.preventDefault()
-        if(!props.noteTitle){
-            alert("Provide a valid note title.")
-            return
-        }
-
-        const newNotes = props.notes.map(item =>{
-            if(item.id === props.editAbleNote.id){
-                item.title = props.noteTitle
-            }
-            return item
-        })
-        props.setNotes(newNotes)
-        props.setEditMode(false)
-        props.setEditAbleNote(null)
-        props.setNoteTitle('')
-    }
 
     return (
         <div>
-            <form onSubmit={(e) => props.editMode ? updateHandler(e) : createHandler(e)}>
+            <form onSubmit={props.editMode ? updateHandler : props.handleSubmit}>
                 <input
                     type='text'
                     value={props.noteTitle}
                     onChange={(e) => props.setNoteTitle(e.target.value)}
                 />
-                <button type='submit'>{props.editMode ? "Update" : "Add"}</button>
+                <button type='submit'>{props.editMode ? 'Update' : 'Add'}</button>
             </form>
-
         </div>
     );
 };
