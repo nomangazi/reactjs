@@ -4,10 +4,6 @@ import NoteForm from './components/NoteForm';
 import NotesList from './components/NotesList';
 
 function App() {
-    const [noteTitle, setNoteTitle] = useState('');
-    const [notes, setNotes] = useState([]);
-    const [editMode, setEditMode] = useState(false);
-    const [editAbleNote, setEditAbleNote] = useState(null);
 
     const getAllNotes = () => {
         fetch(`http://localhost:4000/notes`)
@@ -20,29 +16,6 @@ function App() {
     useEffect(() => {
         getAllNotes();
     }, []);
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (!noteTitle) {
-            alert(`Please provide a valid note title.`);
-            return;
-        }
-        const newNote = {
-            id: Date.now() + '',
-            title: noteTitle,
-        };
-
-        fetch(`http://localhost:4000/notes`, {
-            method: 'POST',
-            body: JSON.stringify(newNote),
-            headers: {
-                'Content-type': 'application/json',
-            },
-        }).then(() => {
-            getAllNotes();
-            setNoteTitle('');
-        });
-    };
 
     return (
         <div className='App'>
