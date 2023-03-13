@@ -1,4 +1,4 @@
-import { useState, createContext } from 'react';
+import { useEffect, useState, createContext } from 'react';
 
 export const NotesContext = createContext();
 
@@ -7,6 +7,18 @@ const NotesProvider = ({ children }) => {
     const [notes, setNotes] = useState([]);
     const [editMode, setEditMode] = useState(false);
     const [editAbleNote, setEditAbleNote] = useState(null);
+
+    const getAllNotes = () => {
+        fetch(`http://localhost:4000/notes`)
+            .then((res) => res.json())
+            .then((data) => {
+                setNotes(data);
+            });
+    };
+
+    useEffect(() => {
+        getAllNotes();
+    }, []);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -30,31 +42,31 @@ const NotesProvider = ({ children }) => {
             setNoteTitle('');
         });
     };
-    
+
     const editHandler = (noteId) => {
         console.log(noteId);
-        const toBeEditedNotes = props.notes.find((item) => item.id === noteId);
-        props.setEditMode(true);
-        props.setEditAbleNote(toBeEditedNotes);
-        props.setNoteTitle(toBeEditedNotes.title);
+        const toBeEditedNotes = notes.find((item) => item.id === noteId);
+        setEditMode(true);
+        setEditAbleNote(toBeEditedNotes);
+        setNoteTitle(toBeEditedNotes.title);
     };
 
     const updateHandler = (e) => {
         e.preventDefault();
-        if (!props.noteTitle) {
+        if (!noteTitle) {
             alert('Provide a valid note title.');
             return;
         }
-        fetch(`http://localhost:4000/notes/${props.editAbleNote.id}`, {
+        fetch(`http://localhost:4000/notes/${editAbleNote.id}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                title: props.noteTitle,
+                title: noteTitle,
             }),
         }).then(() => {
-            props.getAllNotes();
-            props.setEditMode(false);
-            props.setNoteTitle('');
+            getAllNotes();
+            setEditMode(false);
+            setNoteTitle('');
         });
     };
 
@@ -62,9 +74,26 @@ const NotesProvider = ({ children }) => {
         fetch(`http://localhost:4000/notes/${noteId}`, {
             method: 'DELETE',
         }).then(() => {
-            props.getAllNotes();
+            getAllNotes();
         });
     };
+
+    const NoteCtx = {
+        noteTitle,
+        setNoteTitle,
+        notes,
+        setNotes,
+        editMode,
+        setEditMode,
+        editAbleNote,
+        setEditAbleNote,
+        handleSubmit,
+        editHandler,
+        updateHandler,
+        deleteHandler,
+        getAllNotes,
+    };
+    return <NotesContext.Provider value={NoteCtx}>{children}</NotesContext.Provider>;
 };
 
 export default NotesProvider;
