@@ -1,5 +1,4 @@
 const NoteForm = (props) => {
-    console.log(props);
     const updateHandler = (e) => {
         e.preventDefault();
         if (!props.noteTitle) {
