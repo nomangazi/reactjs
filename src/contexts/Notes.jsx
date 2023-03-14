@@ -44,7 +44,6 @@ const NotesProvider = ({ children }) => {
     };
 
     const editHandler = (noteId) => {
-        console.log(noteId);
         const toBeEditedNotes = notes.find((item) => item.id === noteId);
         setEditMode(true);
         setEditAbleNote(toBeEditedNotes);
@@ -77,7 +76,6 @@ const NotesProvider = ({ children }) => {
             getAllNotes();
         });
     };
-
     const NoteCtx = {
         noteTitle,
         setNoteTitle,
@@ -93,6 +91,7 @@ const NotesProvider = ({ children }) => {
         deleteHandler,
         getAllNotes,
     };
+
     return <NotesContext.Provider value={NoteCtx}>{children}</NotesContext.Provider>;
 };
 

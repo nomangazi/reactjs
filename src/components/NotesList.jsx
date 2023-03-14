@@ -1,17 +1,18 @@
-import React from 'react';
+import { useContext } from 'react';
+import { NotesContext } from '../contexts/Notes';
 
-const NotesList = (props) => {
-
+const NotesList = () => {
+    const notesData = useContext(NotesContext);
     return (
         <div className='notesList'>
             <ul>
-                {props.notes.map((note) => (
+                {notesData?.notes.map((note) => (
                     <li key={note.id}>
                         {note.title}
                         &nbsp;
-                        <button onClick={() => editHandler(note.id)}>Edit</button>
+                        <button onClick={() => notesData?.editHandler(note.id)}>Edit</button>
                         &nbsp;
-                        <button onClick={() => deleteHandler(note.id)}>Delete</button>
+                        <button onClick={() => notesData?.deleteHandler(note.id)}>Delete</button>
                     </li>
                 ))}
             </ul>
